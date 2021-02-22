@@ -77,10 +77,10 @@ def floodfill(image, u, v, color):
     return image
             
             
-            
+# Used for internal debugging           
 col = [20, 20, 20]
 u = 0
 v = 0
-img = PIL.Image.open('10pix_U.jpg')
+img = PIL.Image.open('imgs/10x10_U.jpg')
 img = np.asarray(img).copy()
 floodfill(img, u, v, col)
