@@ -45,7 +45,6 @@ def floodfill(image, u, v, color):
     assert(len(color)==channels), 'Selected color has different number of channels than the image.'
     
     #Check that the RGB input is within 0 and 255
-    #overflow = np.where(color>255); underflow = np.where(color<0)
     assert(all(ch >= 0 and ch <=255 for ch in color)), "The RGB values of input color must be between 0 and 255!"
 
     # Save the color of the root node
