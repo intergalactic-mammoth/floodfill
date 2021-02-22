@@ -8,7 +8,7 @@ import PIL
 
 def get_neighbors(x, y, width, height):
     '''
-    Returns the neighbors of the selected pixel (x,y).
+    Returns the neighbors of the selected pixel (x,y) as a set.
     width and height correspond to the dimensions of the image.
 
     If it is an edge or corner pixel, it only has 3 or 2 neighbors
@@ -29,6 +29,9 @@ def get_neighbors(x, y, width, height):
 
 def floodfill(image, u, v, color):
     '''
+    This is basically a modification of the stack-based
+    DF-Traversal algorithm we were taught in class. 
+
     Image is an numpy tensor WidthxHeightxChannels.
     (u,v) is the starting point for the floodfill operation.
     color is a triplet of [R, G, B] for the desired resulting color.
@@ -44,21 +47,32 @@ def floodfill(image, u, v, color):
     assert(v<=height), 'Selected point out of image in y-dir!'
     assert(len(color)==channels), 'Selected color has different number of channels than the image.'
 
-    # Save the color of the root pixel
+    # Save the color of the root node
     root_col = np.array(image[u, v, :])   
     
+    # Start the stack with the coordinates of the root node
     stack = {(u, v)}
 
+    # Iterate until the stack is empty
     while len(stack) is not 0:
+        # Remove the last item from the stack and save it to V
         V = stack.pop()
+
+        # Get the neighbors of V as a set.
         neighbors = get_neighbors(V[0], V[1], width, height)
 
-        image[V[0], V[1], :] = color        #"visit" pixel
+        # Change the color of the image at the coordinates of V
+        image[V[0], V[1], :] = color
 
+        # Iterate through all the neighbors of V
         for neighbor in neighbors:
+            # Get the color of each neighbor
             n_col = image[neighbor[0], neighbor[1], :]
 
-            #colors_equal = np.array_equal(n_col, root_col)
+            # If the color of the neighbor matches the color of the root
+            # node, then it needs to be added to the stack.
+            # To avoid the problem of minor noise present in .jpg images
+            # we add a small tolerance value.
             colors_equal = np.allclose(n_col, root_col, atol=5)
             if colors_equal:
                 stack.add(neighbor)
