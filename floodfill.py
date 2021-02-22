@@ -1,7 +1,4 @@
 #%%
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import imageio
 import numpy as np
 import PIL
 
