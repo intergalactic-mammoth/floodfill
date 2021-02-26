@@ -24,10 +24,13 @@ def get_neighbors(x, y, width, height):
 
     return neighbors
 
-def floodfill(image, u, v, color):
+def floodfill(image, root, color):
     '''
-    This is basically a modification of the stack-based
-    DF-Traversal algorithm we were taught in class. 
+    This is basically a modification of a Traversal
+    algorithm we were taught in class. Because python's 
+    set data structure returns a random element of a set 
+    when you call set.pop(), the implementation is neither
+    depth nor breadth first.
 
     Image is an numpy tensor WidthxHeightxChannels.
     (u,v) is the starting point for the floodfill operation.
@@ -40,8 +43,9 @@ def floodfill(image, u, v, color):
     # Check that the input parameters are reasonable: (u,v) is part of the
     # image and that the image and the chosen color have the same number 
     # of channels
-    assert(u<=width), 'Selected point out of image in x-dir!'
-    assert(v<=height), 'Selected point out of image in y-dir!'
+    u = root[0]; v= root[1];
+    assert(u<=width and u>=0), 'Selected point out of image in x-dir!'
+    assert(v<=height and v>=0), 'Selected point out of image in y-dir!'
     assert(len(color)==channels), 'Selected color has different number of channels than the image.'
     
     #Check that the RGB input is within 0 and 255
@@ -51,11 +55,11 @@ def floodfill(image, u, v, color):
     root_col = np.array(image[u, v, :])   
     
     # Start the stack with the coordinates of the root node
-    stack = {(u, v)}
+    stack = {root}
 
     # Iterate until the stack is empty
     while len(stack) is not 0:
-        # Remove the last item from the stack and save it to V
+        # Remove the last vertex from the stack and save it to V
         V = stack.pop()
 
         # Get the neighbors of V as a set.
@@ -82,8 +86,7 @@ def floodfill(image, u, v, color):
             
 # Used for internal debugging           
 col = [20, 20, 20]
-u = 0
-v = 0
+start = (0, 0)
 img = Image.open('imgs/10x10_U.jpg')
 img = np.asarray(img).copy()
-floodfill(img, u, v, col)
+floodfill(img, start, col)
